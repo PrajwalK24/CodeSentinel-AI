@@ -1,0 +1,11 @@
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monitor | CodeSentinel</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><link href="${pageContext.request.contextPath}/static/css/style.css" rel="stylesheet"></head>
+<body><nav class="topbar"><a class="brand" href="${pageContext.request.contextPath}/admin/dashboard"><span>Code</span>Sentinel Admin<span class="cursor"></span></a><div class="topbar-actions"><a class="btn btn-outline-light btn-sm" href="${pageContext.request.contextPath}/logout">Logout</a></div></nav>
+<div class="app-frame"><aside class="sidebar"><a href="${pageContext.request.contextPath}/admin/dashboard">Dashboard</a><a href="${pageContext.request.contextPath}/admin/users">User Management</a><a class="active" href="${pageContext.request.contextPath}/admin/monitor">Code Monitor</a></aside>
+<main class="content fade-in"><div class="page-head"><div><h1>Code Monitor</h1><p>All submitted code and report outcomes.</p></div><select id="riskFilter" class="form-select dark-input search"><option value="">All Risks</option><option>LOW</option><option>MEDIUM</option><option>HIGH</option><option>CRITICAL</option></select></div>
+<section class="panel"><table class="table sentinel-table monitor-table"><thead><tr><th>User</th><th>Title</th><th>Language</th><th>Risk</th><th>Date</th><th>Bugs</th><th>Action</th></tr></thead><tbody>
+<c:forEach items="${submissions}" var="s"><tr data-risk="${s.report.riskLevel}"><td>${s.user.email}</td><td>${s.title}</td><td>${s.language}</td><td><span class="risk ${s.report.riskLevel}">${s.report.riskLevel}</span></td><td>${s.submittedAt}</td><td>${s.report.totalBugs}</td><td><a class="link-info" href="${pageContext.request.contextPath}/report/${s.report.id}">View Report</a></td></tr></c:forEach>
+<c:if test="${empty submissions}"><tr><td colspan="7" class="text-center muted">No submissions yet.</td></tr></c:if>
+</tbody></table></section></main></div><script src="${pageContext.request.contextPath}/static/js/app.js"></script></body></html>

@@ -1,0 +1,10 @@
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Users | CodeSentinel</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><link href="${pageContext.request.contextPath}/static/css/style.css" rel="stylesheet"></head>
+<body><nav class="topbar"><a class="brand" href="${pageContext.request.contextPath}/admin/dashboard"><span>Code</span>Sentinel Admin<span class="cursor"></span></a><div class="topbar-actions"><a class="btn btn-outline-light btn-sm" href="${pageContext.request.contextPath}/logout">Logout</a></div></nav>
+<div class="app-frame"><aside class="sidebar"><a href="${pageContext.request.contextPath}/admin/dashboard">Dashboard</a><a class="active" href="${pageContext.request.contextPath}/admin/users">User Management</a><a href="${pageContext.request.contextPath}/admin/monitor">Code Monitor</a></aside>
+<main class="content fade-in"><div class="page-head"><div><h1>User Management</h1><p>Activate or deactivate developer accounts.</p></div><input id="tableSearch" class="form-control dark-input search" placeholder="Search users"></div>
+<section class="panel"><table class="table sentinel-table searchable"><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Joined</th><th>Action</th></tr></thead><tbody>
+<c:forEach items="${users}" var="u"><tr><td>${u.fullName}</td><td>${u.email}</td><td>${u.role}</td><td><span class="status ${u.active ? 'on' : 'off'}">${u.active ? 'Active' : 'Inactive'}</span></td><td>${u.createdAt}</td><td><form method="post" action="${pageContext.request.contextPath}/admin/users/${u.id}/toggle"><input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"><button class="btn btn-sm ${u.active ? 'btn-outline-danger' : 'btn-outline-success'}">${u.active ? 'Deactivate' : 'Activate'}</button></form></td></tr></c:forEach>
+</tbody></table></section></main></div><script src="${pageContext.request.contextPath}/static/js/app.js"></script></body></html>
