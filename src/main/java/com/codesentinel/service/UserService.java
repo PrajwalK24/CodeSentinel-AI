@@ -97,11 +97,21 @@ public class UserService implements UserDetailsService {
         user.setActive(!user.isActive());
     }
 
+    @Transactional
+    public void updateRole(Long id, Role role) {
+        User user = findById(id);
+        user.setRole(role);
+    }
+
     public long countAll() {
         return userRepository.count();
     }
 
     public long countActive() {
         return userRepository.countByActiveTrue();
+    }
+
+    public long countByRole(Role role) {
+        return userRepository.countByRole(role);
     }
 }

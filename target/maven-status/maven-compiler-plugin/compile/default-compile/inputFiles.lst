@@ -1,10 +1,17 @@
 C:\Users\prajw\OneDrive\Desktop\Code Review\codesentinel\src\main\java\com\codesentinel\analyzer\model\AnalysisResult.java
 C:\Users\prajw\OneDrive\Desktop\Code Review\codesentinel\src\main\java\com\codesentinel\analyzer\model\CodeIssue.java
+C:\Users\prajw\OneDrive\Desktop\Code Review\codesentinel\src\main\java\com\codesentinel\analyzer\rules\ArithmeticErrorDetector.java
+C:\Users\prajw\OneDrive\Desktop\Code Review\codesentinel\src\main\java\com\codesentinel\analyzer\rules\CodeSanitizer.java
 C:\Users\prajw\OneDrive\Desktop\Code Review\codesentinel\src\main\java\com\codesentinel\analyzer\rules\ComplexityCalculator.java
 C:\Users\prajw\OneDrive\Desktop\Code Review\codesentinel\src\main\java\com\codesentinel\analyzer\rules\HardcodedCredentialDetector.java
 C:\Users\prajw\OneDrive\Desktop\Code Review\codesentinel\src\main\java\com\codesentinel\analyzer\rules\InfiniteLoopDetector.java
+C:\Users\prajw\OneDrive\Desktop\Code Review\codesentinel\src\main\java\com\codesentinel\analyzer\rules\LogicalRuntimeBugDetector.java
 C:\Users\prajw\OneDrive\Desktop\Code Review\codesentinel\src\main\java\com\codesentinel\analyzer\rules\NestedLoopDetector.java
 C:\Users\prajw\OneDrive\Desktop\Code Review\codesentinel\src\main\java\com\codesentinel\analyzer\rules\NullPointerDetector.java
+C:\Users\prajw\OneDrive\Desktop\Code Review\codesentinel\src\main\java\com\codesentinel\analyzer\rules\OptimizationSuggestionDetector.java
+C:\Users\prajw\OneDrive\Desktop\Code Review\codesentinel\src\main\java\com\codesentinel\analyzer\rules\ResourceConcurrencyDetector.java
+C:\Users\prajw\OneDrive\Desktop\Code Review\codesentinel\src\main\java\com\codesentinel\analyzer\rules\SecurityVulnerabilityDetector.java
+C:\Users\prajw\OneDrive\Desktop\Code Review\codesentinel\src\main\java\com\codesentinel\analyzer\rules\SemanticIndexDetector.java
 C:\Users\prajw\OneDrive\Desktop\Code Review\codesentinel\src\main\java\com\codesentinel\analyzer\StaticCodeAnalyzer.java
 C:\Users\prajw\OneDrive\Desktop\Code Review\codesentinel\src\main\java\com\codesentinel\CodeSentinelApplication.java
 C:\Users\prajw\OneDrive\Desktop\Code Review\codesentinel\src\main\java\com\codesentinel\config\PasswordConfig.java

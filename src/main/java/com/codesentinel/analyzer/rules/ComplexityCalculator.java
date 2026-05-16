@@ -6,10 +6,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ComplexityCalculator {
-    private static final Pattern DECISION = Pattern.compile("\\b(if|else\\s+if|for|while|case|catch)\\b|&&|\\|\\|", Pattern.CASE_INSENSITIVE);
+    private static final Pattern DECISION = Pattern.compile("\\b(if|for|while|case|catch)\\b|&&|\\|\\||\\?", Pattern.CASE_INSENSITIVE);
+    private static final Pattern LOOP = Pattern.compile("\\b(for|while|do)\\b", Pattern.CASE_INSENSITIVE);
 
     public int calculate(String code) {
-        Matcher matcher = DECISION.matcher(stripStrings(code));
+        Matcher matcher = DECISION.matcher(CodeSanitizer.stripCommentsAndStrings(code));
         int score = 1;
         while (matcher.find()) {
             score++;
@@ -25,17 +26,18 @@ public class ComplexityCalculator {
     }
 
     public String estimateTimeComplexity(String code) {
-        String[] lines = code.split("\\R", -1);
-        int maxLoopDepth = maxLoopDepth(lines);
-        if (hasDivideAndConquerShape(code)) return maxLoopDepth > 0 ? "O(n log n)" : "O(log n)";
-        if (maxLoopDepth >= 3) return "O(n^3)";
+        String clean = CodeSanitizer.stripCommentsAndStrings(code);
+        int maxLoopDepth = maxLoopDepth(clean);
+        if (hasDivideAndConquerShape(clean)) return maxLoopDepth > 0 ? "O(n log n)" : "O(log n)";
+        if (maxLoopDepth >= 3) return "O(n^" + maxLoopDepth + ")";
         if (maxLoopDepth == 2) return "O(n^2)";
-        if (maxLoopDepth == 1) return "O(n)";
+        if (maxLoopDepth == 1 || hasLinearCollectionTraversal(clean)) return "O(n)";
+        if (hasRecursiveCall(clean)) return "O(n)";
         return "O(1)";
     }
 
     public String estimateSpaceComplexity(String code) {
-        String compact = stripStrings(code);
+        String compact = CodeSanitizer.stripCommentsAndStrings(code);
         int collectionCount = countMatches(compact, "\\b(new\\s+(ArrayList|HashMap|HashSet|LinkedList|List|Map|Set)|\\[\\s*\\]|\\.push\\(|\\.add\\(|\\.put\\()");
         if (collectionCount >= 3 || compact.matches("(?s).*\\b\\w+\\s*\\[\\s*\\]\\s*=\\s*new\\s+\\w+\\s*\\[[^\\]]+\\].*")) {
             return "O(n)";
@@ -46,25 +48,46 @@ public class ComplexityCalculator {
         return "O(1)";
     }
 
-    private int maxLoopDepth(String[] lines) {
-        int braceDepth = 0;
+    private int maxLoopDepth(String code) {
         int maxDepth = 0;
-        java.util.Deque<Integer> loopBraceDepths = new java.util.ArrayDeque<>();
-        Pattern loop = Pattern.compile("\\b(for|while|do)\\b", Pattern.CASE_INSENSITIVE);
-        for (String line : lines) {
-            int closeCount = count(line, '}');
-            for (int i = 0; i < closeCount; i++) {
-                braceDepth = Math.max(0, braceDepth - 1);
-                while (!loopBraceDepths.isEmpty() && loopBraceDepths.peekLast() > braceDepth) {
-                    loopBraceDepths.removeLast();
+        java.util.Deque<Block> stack = new java.util.ArrayDeque<>();
+        boolean pendingLoop = false;
+        int parenDepth = 0;
+
+        for (int i = 0; i < code.length(); i++) {
+            Matcher matcher = LOOP.matcher(code);
+            matcher.region(i, code.length());
+            if (matcher.lookingAt()) {
+                pendingLoop = true;
+                i = matcher.end() - 1;
+                continue;
+            }
+
+            char ch = code.charAt(i);
+            if (ch == '(') parenDepth++;
+            if (ch == ')') parenDepth = Math.max(0, parenDepth - 1);
+            if (ch == '{') {
+                int depth = stack.isEmpty() ? 0 : stack.peek().loopDepth;
+                if (pendingLoop) {
+                    depth++;
+                    maxDepth = Math.max(maxDepth, depth);
                 }
+                stack.push(new Block(depth));
+                pendingLoop = false;
+                continue;
             }
-            if (loop.matcher(line).find()) {
-                int loopDepth = loopBraceDepths.size() + 1;
-                maxDepth = Math.max(maxDepth, loopDepth);
-                loopBraceDepths.addLast(braceDepth + Math.max(1, count(line, '{')));
+            if (ch == '}') {
+                if (!stack.isEmpty()) stack.pop();
+                pendingLoop = false;
+                continue;
             }
-            braceDepth += count(line, '{');
+            if (ch == ';' && parenDepth == 0) {
+                if (pendingLoop) {
+                    int depth = (stack.isEmpty() ? 0 : stack.peek().loopDepth) + 1;
+                    maxDepth = Math.max(maxDepth, depth);
+                }
+                pendingLoop = false;
+            }
         }
         return maxDepth;
     }
@@ -72,6 +95,10 @@ public class ComplexityCalculator {
     private boolean hasDivideAndConquerShape(String code) {
         String compact = code.replaceAll("\\s+", "");
         return compact.contains("/2") || compact.contains(">>1") || compact.matches("(?s).*(binarySearch|mergeSort|quickSort).*");
+    }
+
+    private boolean hasLinearCollectionTraversal(String code) {
+        return Pattern.compile("\\.\\s*(stream|forEach|map|filter|reduce)\\s*\\(", Pattern.CASE_INSENSITIVE).matcher(code).find();
     }
 
     private boolean hasRecursiveCall(String code) {
@@ -91,13 +118,11 @@ public class ComplexityCalculator {
         return count;
     }
 
-    private int count(String s, char c) {
-        int n = 0;
-        for (char ch : s.toCharArray()) if (ch == c) n++;
-        return n;
-    }
+    private static class Block {
+        private final int loopDepth;
 
-    private String stripStrings(String code) {
-        return code.replaceAll("\"(?:\\\\.|[^\"\\\\])*\"|'(?:\\\\.|[^'\\\\])*'", "\"\"");
+        private Block(int loopDepth) {
+            this.loopDepth = loopDepth;
+        }
     }
 }

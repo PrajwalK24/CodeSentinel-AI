@@ -24,6 +24,8 @@ public class ReportController {
     public String report(@PathVariable Long id, Authentication auth, Model model) {
         AnalysisReport report = reportService.findReport(id);
         model.addAttribute("report", report);
+        model.addAttribute("timeComplexity", report.getTimeComplexity() == null || report.getTimeComplexity().isBlank() ? "O(1)" : report.getTimeComplexity());
+        model.addAttribute("spaceComplexity", report.getSpaceComplexity() == null || report.getSpaceComplexity().isBlank() ? "O(1)" : report.getSpaceComplexity());
         model.addAttribute("codeLines", report.getSubmission().getSourceCode().split("\\R", -1));
         Set<Integer> issueLines = report.getIssues().stream().map(i -> i.getLineNumber()).collect(Collectors.toSet());
         model.addAttribute("issueLines", issueLines);

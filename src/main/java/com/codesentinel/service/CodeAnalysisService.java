@@ -64,6 +64,8 @@ public class CodeAnalysisService {
             entity.setSeverity(issue.getSeverity());
             entity.setDescription(issue.getDescription());
             entity.setSuggestion(issue.getSuggestion());
+            entity.setImpact(issue.getImpact());
+            entity.setConfidence(issue.getConfidence());
             entity.setCodeSnippet(issue.getCodeSnippet());
             report.getIssues().add(entity);
         }
@@ -76,6 +78,10 @@ public class CodeAnalysisService {
 
     public List<CodeSubmission> allRecent() {
         return submissionRepository.findAllWithUserAndReport().stream().limit(20).toList();
+    }
+
+    public AnalysisResult analyzeLive(String code) {
+        return analyzer.analyze(code == null ? "" : code);
     }
 
     public long countAll() {

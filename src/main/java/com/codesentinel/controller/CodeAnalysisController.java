@@ -2,6 +2,7 @@ package com.codesentinel.controller;
 
 import com.codesentinel.model.AnalysisReport;
 import com.codesentinel.model.User;
+import com.codesentinel.analyzer.model.AnalysisResult;
 import com.codesentinel.service.CodeAnalysisService;
 import com.codesentinel.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -49,5 +52,11 @@ public class CodeAnalysisController {
         User user = userService.findByEmail(auth.getName());
         AnalysisReport report = codeAnalysisService.analyzePaste(user, title, language, sourceCode);
         return "redirect:/report/" + report.getId();
+    }
+
+    @PostMapping("/analyze/live")
+    @ResponseBody
+    public AnalysisResult analyzeLive(@RequestBody Map<String, String> request) {
+        return codeAnalysisService.analyzeLive(request.getOrDefault("sourceCode", ""));
     }
 }

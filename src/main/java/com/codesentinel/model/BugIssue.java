@@ -35,6 +35,21 @@ public class BugIssue {
     @Column(nullable = false, length = 700)
     private String suggestion;
 
+    @Column(nullable = false, length = 700)
+    private String impact = "Can affect runtime behavior, correctness, or security.";
+
+    @Column(nullable = false, length = 40)
+    private String confidence = "High Confidence";
+
     @Column(name = "code_snippet", columnDefinition = "TEXT")
     private String codeSnippet;
+
+    public String getDisplaySeverity() {
+        return switch (severity) {
+            case CRITICAL -> "Critical";
+            case MAJOR -> "High";
+            case MINOR -> "Medium";
+            case INFO -> "Low";
+        };
+    }
 }

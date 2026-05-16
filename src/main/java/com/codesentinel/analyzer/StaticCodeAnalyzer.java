@@ -13,17 +13,25 @@ import java.util.Comparator;
 public class StaticCodeAnalyzer {
     private final InfiniteLoopDetector infiniteLoopDetector = new InfiniteLoopDetector();
     private final NullPointerDetector nullPointerDetector = new NullPointerDetector();
-    private final NestedLoopDetector nestedLoopDetector = new NestedLoopDetector();
     private final HardcodedCredentialDetector hardcodedCredentialDetector = new HardcodedCredentialDetector();
+    private final SecurityVulnerabilityDetector securityVulnerabilityDetector = new SecurityVulnerabilityDetector();
+    private final ArithmeticErrorDetector arithmeticErrorDetector = new ArithmeticErrorDetector();
+    private final LogicalRuntimeBugDetector logicalRuntimeBugDetector = new LogicalRuntimeBugDetector();
+    private final SemanticIndexDetector semanticIndexDetector = new SemanticIndexDetector();
+    private final ResourceConcurrencyDetector resourceConcurrencyDetector = new ResourceConcurrencyDetector();
     private final ComplexityCalculator complexityCalculator = new ComplexityCalculator();
 
     public AnalysisResult analyze(String code) {
         long start = System.currentTimeMillis();
         AnalysisResult result = new AnalysisResult();
         result.getIssues().addAll(hardcodedCredentialDetector.detect(code));
+        result.getIssues().addAll(securityVulnerabilityDetector.detect(code));
+        result.getIssues().addAll(arithmeticErrorDetector.detect(code));
+        result.getIssues().addAll(logicalRuntimeBugDetector.detect(code));
+        result.getIssues().addAll(semanticIndexDetector.detect(code));
+        result.getIssues().addAll(resourceConcurrencyDetector.detect(code));
         result.getIssues().addAll(infiniteLoopDetector.detect(code));
         result.getIssues().addAll(nullPointerDetector.detect(code));
-        result.getIssues().addAll(nestedLoopDetector.detect(code));
         result.getIssues().sort(Comparator.comparingInt(CodeIssue::getLineNumber));
         int complexity = complexityCalculator.calculate(code);
         result.setComplexityScore(complexity);
