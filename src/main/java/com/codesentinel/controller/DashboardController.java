@@ -27,16 +27,10 @@ public class DashboardController {
         model.addAttribute("criticalIssues", reportService.criticalFor(user));
         model.addAttribute("avgComplexity", String.format("%.1f", reportService.avgComplexityFor(user)));
         model.addAttribute("severityData", reportService.severityDistribution(user));
-        model.addAttribute("riskData", reportService.riskDistribution(user));
         model.addAttribute("topIssues", reportService.issueTypeDistribution(user));
-        long totalBugs = reportService.totalBugsFor(user);
-        long criticalIssues = reportService.criticalFor(user);
-        long qualityScore = Math.max(0, 100 - (criticalIssues * 12) - (totalBugs * 2));
-        model.addAttribute("qualityScore", qualityScore);
-        var languageData = reportService.languageDistribution();
-        model.addAttribute("languageData", languageData);
-        model.addAttribute("languageLabels", String.join(",", languageData.keySet()));
-        model.addAttribute("languageValues", languageData.values().stream().map(String::valueOf).reduce((a, b) -> a + "," + b).orElse(""));
+        model.addAttribute("languageData", reportService.languageDistribution());
+        model.addAttribute("languageLabels", String.join(",", reportService.languageDistribution().keySet()));
+        model.addAttribute("languageValues", reportService.languageDistribution().values().stream().map(String::valueOf).reduce((a, b) -> a + "," + b).orElse(""));
         model.addAttribute("activePage", "dashboard");
         return "dashboard";
     }

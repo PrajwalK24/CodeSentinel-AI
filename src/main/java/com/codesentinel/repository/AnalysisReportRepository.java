@@ -19,12 +19,6 @@ public interface AnalysisReportRepository extends JpaRepository<AnalysisReport, 
     @Query("select coalesce(sum(r.totalBugs), 0) from AnalysisReport r")
     long sumAllBugs();
 
-    @Query("select coalesce(sum(r.criticalCount), 0) from AnalysisReport r")
-    long sumAllCritical();
-
-    @Query("select coalesce(avg(r.complexityScore), 0) from AnalysisReport r")
-    double avgComplexityAll();
-
     @Query("select coalesce(sum(r.totalBugs), 0) from AnalysisReport r where r.submission.user = :user")
     long sumBugsByUser(@Param("user") User user);
 

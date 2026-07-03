@@ -16,11 +16,7 @@
         <div class="stat-card"><span>Total Analyses</span><strong>${totalAnalyses}</strong></div>
         <div class="stat-card"><span>Total Bugs Found</span><strong>${totalBugs}</strong></div>
         <div class="stat-card"><span>Critical Issues</span><strong class="text-danger">${criticalIssues}</strong></div>
-        <div class="stat-card"><span>Quality Score</span><strong>${qualityScore}</strong></div>
-    </section>
-    <section class="insight-grid">
-        <div class="panel insight-card"><span>Average Complexity</span><strong>${avgComplexity}</strong><p>Lower scores indicate simpler, easier-to-review code.</p></div>
-        <div class="panel insight-card"><span>Risk Breakdown</span><div class="risk-summary compact"><span><strong>${riskData.LOW}</strong> Low</span><span><strong>${riskData.MEDIUM}</strong> Medium</span><span><strong>${riskData.HIGH}</strong> High</span><span><strong>${riskData.CRITICAL}</strong> Critical</span></div></div>
+        <div class="stat-card"><span>Avg Complexity</span><strong>${avgComplexity}</strong></div>
     </section>
     <section class="chart-grid">
         <div class="panel"><h2>Bug Severity</h2><canvas id="severityChart" data-labels="CRITICAL,MAJOR,MINOR,INFO" data-values="${severityData.CRITICAL},${severityData.MAJOR},${severityData.MINOR},${severityData.INFO}"></canvas></div>
@@ -28,7 +24,7 @@
     </section>
     <section class="panel"><h2>Most Common Issue Types</h2>
         <ul class="issue-list">
-            <c:forEach items="${topIssues.entrySet()}" var="entry"><li><span>${entry.key}</span><strong>${entry.value}</strong></li></c:forEach>
+            <c:forEach items="${topIssues.entrySet()}" var="entry"><li><strong>${entry.key}</strong>: ${entry.value}</li></c:forEach>
             <c:if test="${empty topIssues}"><li class="muted">No issue types found yet.</li></c:if>
         </ul>
     </section>
